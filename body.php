@@ -1,152 +1,179 @@
 <?php
+
 include("admin/connect.php");
+
 $issue = $_GET['issue'];
-$qqq = "Select * from `$mysql_table` where `main` = 1 and `issue` = '$issue' Limit 1";
-$query = mysql_query($qqq);
-while($row = mysql_fetch_array($query)) {
-$id = $row['id'];
-$cat = $row['cat'];
-$name = $row['name'];
-$img = $row['img'];
-$str = nl2br($row['text']);
-$text = substr($str, 0, 850);
+
+/**
+ * GLAVNA STATIQ
+ * Izbirane na zaglavnata statiq
+ */
+$mainQuery = "Select * from `articles` where `main` = 1 and `issue` = '$issue' Limit 1";
+$mainQuery = mysql_query($mainQuery);
+while($row = mysql_fetch_assoc($mainQuery)) {
+   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['text'] = nl2br($row['text']); 
+   $row['text'] = mb_substr($row['text'], 0, 850, 'UTF-8');
+   $main[] = $row;
 }
-if($text =='') { $err = "Липсва главна новина"; }
-
-//journal review
-$jjj = mysql_query("Select * from `$mysql_table` where `cat` = 'journal' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3");
-while($box = mysql_fetch_array($jjj)) {
-$jcat = $box['cat'];
-$idd = $box['id'];
-$title = $box['name'];
-$txt = $box['text'];
-$content = substr($txt, 0, 65);
-$ico = $box['ico'];
-$jview .= "<div id='article'><a href='?q=$jcat&opt=$idd&issue=$issue&method=full'>
-	<img src=$ico width='60' height='60' class='ico' border='0'></a>
-	<a href='?q=$jcat&opt=$idd&issue=$issue&method=full' class='text-head'>$title</a><br>
-	<div id='text'>$content</b></i></u>...</div></div>";
-}
-
-//fiction review
-$fff = mysql_query("Select * from `$mysql_table` where `cat` = 'fiction' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3");
-while($fbox = mysql_fetch_array($fff)) {
-$fcat = $fbox['cat'];
-$fid = $fbox['id'];
-$fname = $fbox['name'];
-$ftxt = $fbox['text'];
-$ftext = substr($ftxt, 0, 65);
-$fico = $fbox['ico'];
-$fview .= "<div id='article'><a href='?q=$fcat&opt=$fid&issue=$issue&method=full'>
-	<img src=$fico width='60' height='60' class='ico2' border='0'></a>
-	<a href='?q=$fcat&opt=$fid&issue=$issue&method=full' class='text-head'>$fname</a><br>
-	<div id='text'>$ftext</b></i></u>...</div></div>";
-}
-
-//poetry review
-$ppp = mysql_query("Select * from `$mysql_table` where `cat` = 'poetry' and `main` = 2 and `issue` = '$issue' order by `id` Limit 1");
-while($pbox = mysql_fetch_array($ppp)) {
-$pcat = $pbox['cat'];
-$pid = $pbox['id'];
-$pname = $pbox['name'];
-$pauthor = $pbox['author'];
-$ptxt = $pbox['text'];
-$ptext = nl2br($ptxt);
-		$numWord = 11;
-		$poem = explode("<br />",$ptext);
-      	for($i=0;$i<=$numWord-1;$i++){
-	 	$t .= $poem[$i].'<br />'; }
-$pview .="<div id='poem'><a href='?q=$pcat&opt=$pid&issue=$issue&method=full' class='poem-head'>$pname</a><br>
-	  <span class='poem-slogan'>($pauthor)</span><br><br />$t</b></i></u>...</div>";
-}
-
-//art review
-$aaa = mysql_query("Select * from `$mysql_table` where `cat` = 'art' and `main` = 3 and `issue` = '$issue' order by `id` Limit 1");
-while($abox = mysql_fetch_array($aaa)) {
-$acat = $abox['cat'];
-$aid = $abox['id'];
-$aname = $abox['name'];
-$aauthor = $abox['author'];
-$atxt = $abox['text'];
-$atext = nl2br($atxt);
-$aimg = $abox['img'];
+$main = $main[0];
+if($main['text'] == '') { $main['err'] = "Р›РёРїСЃРІР° РіР»Р°РІРЅР° РЅРѕРІРёРЅР°"; }
 
 
-list($width, $height) = getimagesize("$aimg");
-$maxheight = 220;
-$maxwidth = 293;
-$ratio = ($maxwidth / $maxheight);
-$divided = ($width / $height);
-
-if(($width<=$maxwidth) and ($height<=$maxheight)) { $n = "width='$width' height='$height'"; }
-if(($width>$maxwidth) and ($height<$maxheight)) { $percentage = ($maxwidth / $width);
-$width = round($width * $percentage); $height = round($height * $percentage); $n = "width='$width' height='$height'"; }
-if(($width<$maxwidth) and ($height>$maxheight)) { $percentage = ($maxheight / $height);
-$width = round($width * $percentage); $height = round($height * $percentage); $n = "width='$width' height='$height'"; }
-
-else{
-	if($divided<=$ratio) { $percentage = ($maxheight / $height); $width = round($width * $percentage);
-						  $height = ($height * $percentage); $n = "width='$width' height='$height'"; }
-	else { $percentage = ($maxwidth / $width); $width = round($width * $percentage);
-						  $height = ($height * $percentage); $n = "width='$width' height='$height'"; }
+/**
+ * JOURNAL
+ * Izbira poslednite tri statii za kategoriq jurnal
+ */
+$mainJournal = "Select * from `articles` where `cat` = 'journal' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3";
+$mainJournal = mysql_query($mainJournal);
+while($row = mysql_fetch_assoc($mainJournal)) {
+   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
+   $journal[] = $row;
 }
 
 
-$aview .="<div id='art'><a href='?q=$acat&opt=$aid&issue=$issue&method=full'>
-		<img src='$aimg' ". $n ." class='art' border='0'></a><br>
-	  <div id='text' style='text-align:left; padding-left: 4px;'>
-	  <a href='?q=$acat&opt=$aid&issue=$issue&method=full' class='text-head'>$aname</a><br />
-	  Автор: $aauthor<br /><br />
-	  </div>
-	</div>";
+/**
+ * POETRY
+ * Izbira poslednite tri tvorbi ot kategoriq poeziq
+ */
+$mainPoetry = "Select * from `articles` where `cat` = 'poetry' and `main` = 2 and `issue` = '$issue' order by `id` Limit 1";
+$mainPoetry = mysql_query($mainPoetry);
+while($row = mysql_fetch_assoc($mainPoetry)){
+   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['text'] = nl2br($row['text']);
+	$poem = explode("<br />",$row['text']);
+   $numWord = min(count($poem), 11);
+   for($i=0; $i< $numWord; $i++)
+      $text .= $poem[$i].'<br />';
+   $row['text'] = $text;
+   $poetry[] = $row;
+}
+$poetry = $poetry[0];
+
+
+/**
+ * FICTION
+ * Izbira poslednite tri tvorbi v kategoriq proza
+ */
+$mainFiction = "Select * from `articles` where `cat` = 'fiction' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3";
+$mainFiction = mysql_query($mainFiction);
+while($row = mysql_fetch_assoc($mainFiction)) {
+   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
+   $fiction[] = $row;
 }
 
-$impressions = mysql_query("Select `imp` from `link`");
-while($bow = mysql_fetch_array($impressions)){
-$imp = $bow['imp'];
+
+/**
+ * ART
+ * Izbira glavnata tvorba v kategoriq art
+ */
+$mainArt = "Select * from `articles` where `cat` = 'art' and `main` = 3 and `issue` = '$issue' order by `id` Limit 1";
+$mainArt = mysql_query($mainArt);
+while($row = mysql_fetch_assoc($mainArt)) {
+   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $art[] = $row;
+   
+   list($width, $height) = getimagesize("$row[img]");
+   $maxheight = 220;
+   $maxwidth = 293;
+   $ratio = ($maxwidth / $maxheight);
+   $divided = ($width / $height);
+   
+   if(($width<=$maxwidth) and ($height<=$maxheight))
+      $n = "width='$width' height='$height'";
+   if(($width>$maxwidth) and ($height<$maxheight)) { 
+      $percentage = ($maxwidth / $width);
+      $width = round($width * $percentage); 
+      $height = round($height * $percentage); 
+      $n = "width='$width' height='$height'";
+   }
+   if(($width<$maxwidth) and ($height>$maxheight)) { 
+      $percentage = ($maxheight / $height);
+      $width = round($width * $percentage); 
+      $height = round($height * $percentage); 
+      $n = "width='$width' height='$height'";
+   }
+   else{ 
+      if($divided<=$ratio) { 
+         $percentage = ($maxheight / $height);
+         $width = round($width * $percentage);
+         $height = ($height * $percentage);
+         $n = "width='$width' height='$height'"; 
+      }
+      else { 
+         $percentage = ($maxwidth / $width);
+         $width = round($width * $percentage);
+         $height = ($height * $percentage);
+         $n = "width='$width' height='$height'"; 
+      }
+   }
 }
-$imp = $imp + 1;
-$impq = mysql_query("UPDATE `link` set `imp` = '$imp'");
+$art = $art[0];
+
 ?>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<title>Училищен вестник</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-</head>
-
-
-<body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-  	<td colspan="2"><div id="main-head"><?php echo($err); echo($name); ?></div></td>
-	<td><div id="heading">Арт</div></td>
+  	<td colspan="2"><div id="main-head"><?php echo $main['err']; echo $main['title']; ?></div></td>
+	<td><div id="heading">РђСЂС‚</div></td>
   </tr>
   <tr>
+   <!-- GLAVNA NOVINA -->
     <td colspan="2" valign="top"><div id="main-box">
-		<a href="<?php echo("?q=$cat&opt=$id&issue=$issue&method=full"); ?>">
-		<img src="<?php echo($img); ?>" width="285" height="220" class="pic" border="0"></a>
-	<?php echo($err); echo($text . "...");
-	 if($err) { $readmore = "#"; }else { $readmore = "?q=$cat&opt=$id&issue=$issue&method=full"; } ?>&nbsp;
-		<a href="<?php echo($readmore); ?>" class="text-head">[чети още]</a><br /><br /></div></td>
+		<a href="<?php echo $row['link']; ?>">
+		<img src="<?php echo $main['img']; ?>" width="285" height="220" class="pic" border="0"></a>
+      <?php 
+         echo $err; 
+         echo $main['text']."...";
+         if($err)
+            $readmore = "#";
+         else $readmore = $row['link'];
+      ?>&nbsp;
+		<a href="<?php echo($readmore); ?>" class="text-head">[С‡РµС‚Рё РѕС‰Рµ]</a><br /><br /></div></td>
+    
+    <!-- GLAVNA ART -->
     <td valign="top"><div id="box">
-	<?php echo($aview); ?>
+    <div id='art'><a href='<?php echo $art['link']; ?>'>
+		<img src='<?php echo $art['img']; ?>' <?php echo $n; ?> class='art' border='0'></a><br>
+	  <div id='text' style='text-align:left; padding-left: 4px;'>
+	  <a href='<?php echo $art['link']; ?>' class='text-head'><?php echo $art['title']; ?></a><br />
+	  РђРІС‚РѕСЂ: <?php echo $art['author']; ?><br /><br />
+	  </div>
+	</div>
     </div></td>
   </tr>
   <tr>
-  	<td><div id="heading">Журнал</div></td>
-	<td><div id="heading">Поезия</div></td>
-	<td><div id="heading">Проза</div></td>
+  	<td><div id="heading">Р–СѓСЂРЅР°Р»</div></td>
+	<td><div id="heading">РџРѕРµР·РёСЏ</div></td>
+	<td><div id="heading">РџСЂРѕР·Р°</div></td>
   </tr>
   <tr>
-    <td valign="top"><div id="box">
-	<?php echo($jview); ?>
-    </div></td>
-    <td valign="top"><div id="box">
-	<?php echo($pview); ?>
-    </div></td>
-    <td valign="top"><div id="box">
-	<?php echo($fview); ?>
+   
+   <!-- JOURNAL LIST -->
+   <td valign="top"><div id="box">
+	<?php foreach($journal as $jbox): ?>
+      <div id='article'><a href='<?php echo $jbox['link']; ?>'>
+      <img src='<?php echo $jbox['ico']; ?>' width='60' height='60' class='ico' border='0'></a>
+      <a href='<?php echo $jbox['link']; ?>' class='text-head'><?php echo $jbox['title']; ?></a><br>
+      <div id='text'><?php echo $jbox['text']; ?></b></i></u>...</div></div>
+   <?php endforeach; ?>
+   </div></td>
+   
+   <!-- POETRY LIST -->
+   <td valign="top"><div id="box">
+   <div id='poem'><a href='?q=$pcat&opt=$pid&issue=$issue&method=full' class='poem-head'><?php echo $poetry['title']; ?></a><br>
+   <span class='poem-slogan'>(<?php echo $poetry['author']; ?>)</span><br><br /><?php echo $poetry['text']; ?></b></i></u>...</div>
+   </div></td>
+   
+   <!-- FICTION LIST -->
+   <td valign="top"><div id="box">
+	<?php foreach($fiction as $fbox): ?>
+   <div id='article'><a href='<?php echo $fbox['link']; ?>'>
+   <img src='<?php echo $fbox['ico']; ?>' width='60' height='60' class='ico2' border='0'></a>
+   <a href='<?php echo $fbox['link']; ?>' class='text-head'><?php echo $fbox['title']; ?></a><br>
+   <div id='text'><?php echo $fbox['text']; ?></b></i></u>...</div></div>
+   <?php endforeach; ?>
 	</div></td>
   </tr>
 </table>
-</body>

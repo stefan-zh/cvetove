@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 include("admin/connect.php");
 
@@ -117,7 +117,7 @@ else {
     </div>
 </div>
 <div id="body1">
-		<?php 
+<?php 
 		if((!$string) or (!$str)){
 		$q = $_GET['q'];
 		$method = $_GET['method'];
