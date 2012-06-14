@@ -1,0 +1,56 @@
+@charset "windows-1251";
+/* CSS Document */
+.option {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	float:left;
+	text-decoration: none;
+	padding:7px;
+	margin-top: 6px;
+	margin-right: 14px;
+}
+a.option:link {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	float:left;
+	text-decoration: none;
+	padding:7px;
+	margin-top: 6px;
+	margin-right: 14px;
+}
+a.option:visited {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	float:left;
+	text-decoration: none;
+	padding:7px;
+	margin-top: 6px;
+	margin-right: 14px;
+}
+a.option:hover {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	float:left;
+	background-image: url(../images/search-over.png);
+	background-repeat: repeat-x;
+	text-decoration: none;
+	padding:7px;
+	margin-top: 6px;
+	margin-right: 14px;
+}
+.optionSelect {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	float:left;
+	background-image: url(../images/search-over.png);
+	background-repeat: repeat-x;
+	text-decoration: none;
+	padding:7px;
+	margin-top: 6px;
+	margin-right: 14px;
+}

@@ -1,0 +1,20 @@
+tinyMCE.addI18n('en.emotions_dlg',{
+title:"Вмъкни личице",
+desc:"Личица",
+cool:"Готин",
+cry:"Тъжен",
+embarassed:"Притеснен",
+foot_in_mouth:"Цапнат в устата",
+frown:"Намръщен",
+innocent:"Невинен",
+kiss:"Целувка",
+laughing:"Смях",
+money_mouth:"Пари",
+sealed:"Тих",
+smile:"Усмивка",
+surprised:"Изненадан",
+tongue_out:"Изплезен",
+undecided:"Нерешителен",
+wink:"Намигащ",
+yell:"Ядосан"
+});

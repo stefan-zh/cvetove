@@ -1,0 +1,45 @@
+@charset "windows-1251";
+/* CSS Document */
+.newsFront{
+	margin-bottom:1px;
+}
+.redMore{
+	padding-bottom: 5px;
+}
+.crazyVideo{
+	height: 227px;
+}
+#login span{
+	margin-bottom: 10px;
+}
+#login .checkbox{
+	margin-left: -1px;
+}
+
+
+.hrzContainer li{
+	display: inline; 
+}
+.hrzContainer3 li{
+	display: inline; 
+}
+.crazySearch input{
+	margin-top: 0px;
+}
+#cloud { line-height: 1.4em; }
+.crazySearch img{
+	padding-top: 0px;
+}
+
+
+/*---------------dida-----------*/
+
+.Gread{
+	height:17px;
+	padding:0px 0px 0px 0px;
+	margin-left:120px;
+}
+.Gread a{
+	position:relative;
+	top:-2px;
+}
