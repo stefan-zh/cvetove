@@ -1,0 +1,64 @@
+@charset "windows-1251";
+/* CSS Document */
+#black-box {
+	float:left;
+	background-image:url(../images/menu/black.png);
+	background-repeat:no-repeat;
+	width:137px;
+	height:30px;
+	padding-right: 4px;
+	padding-top: 4px;
+	text-align:center;
+}
+#blue-box {
+	float:left;
+	background-image:url(../images/menu/blue.png);
+	background-repeat:no-repeat;
+	width:137px;
+	height:30px;
+	padding-right: 4px;
+	padding-top: 4px;
+	text-align:center;
+}
+#green-box {
+	float:left;
+	background-image:url(../images/menu/green.png);
+	background-repeat:no-repeat;
+	width:137px;
+	height:30px;
+	padding-right: 4px;
+	padding-top: 4px;
+	text-align:center;
+}
+#red-box {
+	float:left;
+	background-image:url(../images/menu/red.png);
+	background-repeat:no-repeat;
+	width:137px;
+	height:30px;
+	padding-right: 4px;
+	padding-top: 4px;
+	text-align:center;
+}
+
+a.menu-text:link {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:#FFFFFF;
+	font-size:14px;
+	text-decoration:none;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+a.menu-text:visited {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	color:#FFFFFF;
+	font-size:14px;
+	padding-top: 4px;
+	text-decoration:none;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+a.menu-text:hover {
+	color:#FFCC33;
+	padding-top: 4px;
+}
