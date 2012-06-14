@@ -1,31 +1,39 @@
-<?php
+п»ї<?php
+
 include("admin/connect.php");
-$begindate = "2008";
-$enddate = date("Y");
-if($begindate == $enddate) { $year = $begindate; }
-else { $year = "$begindate - $enddate"; }
 
-$ip = $_SERVER['REMOTE_ADDR'];
-$query1 = mysql_query("Select * from `$counter`");
-$num1 = mysql_num_rows($query1);
-if($num1 == 0){ $id=1;
-$query2 = mysql_query("Insert into `$counter` (id, ip) values ($id, \"$ip\")"); }
+/**
+ * Pokazva ot koq godina e zapo4nal vestnika i do
+ * koq godina prodaljava. Tozi red se pokazva vav
+ * footer-a
+ */
+function showYearSpan(){
+   $begindate = "2008";
+   $enddate = date("Y");
+   if($begindate == $enddate)
+      echo $begindate;
+   else 
+      echo "$begindate - $enddate";
+}
+
+/**
+ * Izbira koi broi da pokaje na na4alnata stranica.
+ * Ako potrebitelqt vliza za 1 put, pokazva posledniqt broi
+ * Ako potrebitelqt e izbral broi ot menuto, togava
+ * se pokazva izbraniqt broi.
+ */
+if(!isset($_GET['issue'])){
+   $lastIssueQuery = "SELECT * FROM `issues` ORDER BY `id` DESC LIMIT 1";
+   $lastIssueQuery = mysql_query($lastIssueQuery);
+   while($select = mysql_fetch_assoc($lastIssueQuery)){
+      $issue = $select['issue'];
+   }
+   header('Location: index.php?issue='.$issue.'');
+}
 else {
-$query3 = mysql_query("Select * from `$counter` where ip = \"$ip\"");
-$wp = mysql_num_rows($query3);
-if($wp == 0){ $id = $num1 + 1;
-$query3 = mysql_query("Insert into `$counter` (id, ip) values ($id, \"$ip\")"); } }
+   $issue = $_GET['issue'];
+}
 
-if((!$string) or (!$str)){
-$issue = $_GET['issue'];
-	if(!$issue){
-$is = mysql_query("Select * from `issues` where `status` = '1' order by id DESC Limit 1");
-while($tin = mysql_fetch_array($is)){
-$lastissue = $tin['issue']; 
-$issue = $lastissue;
-echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); die();}
-}
-}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -37,14 +45,14 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 <!--[if lt IE 7.]>
 <script defer type="text/javascript" src="java/pngfix.js"></script>
 <![endif]-->
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<title>Цветове | Електронен вестник на ГПЧЕ "Ромен Ролан"</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Р¦РІРµС‚РѕРІРµ | Р•Р»РµРєС‚СЂРѕРЅРµРЅ РІРµСЃС‚РЅРёРє РЅР° Р“РџР§Р• "Р РѕРјРµРЅ Р РѕР»Р°РЅ"</title>
 <meta name="resource-type" content="document" />
 <meta http-equiv="content-language" content="bg" />
 <meta content="Stefan Zhelyazkov" name="author" />
-<meta name="copyright" content="Copyright © 2008 Stefan Zhelyazkov and Romain Rolland FLS, All Rights Reserved" />
-<meta name="keywords" content="цветове, вестник, електронен вестник, ГПЧЕ Ромен Ролан, журнал, поезия, проза, арт" />
-<meta name="description" content="Вестник Цветове - електронен вестник на Гимназия с преподаване на чужди езици Ромен Ролан, град Стара Загора" />
+<meta name="copyright" content="Copyright В© 2008 Stefan Zhelyazkov and Romain Rolland FLS, All Rights Reserved" />
+<meta name="keywords" content="С†РІРµС‚РѕРІРµ, РІРµСЃС‚РЅРёРє, РµР»РµРєС‚СЂРѕРЅРµРЅ РІРµСЃС‚РЅРёРє, Р“РџР§Р• Р РѕРјРµРЅ Р РѕР»Р°РЅ, Р¶СѓСЂРЅР°Р», РїРѕРµР·РёСЏ, РїСЂРѕР·Р°, Р°СЂС‚" />
+<meta name="description" content="Р’РµСЃС‚РЅРёРє Р¦РІРµС‚РѕРІРµ - РµР»РµРєС‚СЂРѕРЅРµРЅ РІРµСЃС‚РЅРёРє РЅР° Р“РёРјРЅР°Р·РёСЏ СЃ РїСЂРµРїРѕРґР°РІР°РЅРµ РЅР° С‡СѓР¶РґРё РµР·РёС†Рё Р РѕРјРµРЅ Р РѕР»Р°РЅ, РіСЂР°Рґ РЎС‚Р°СЂР° Р—Р°РіРѕСЂР°" />
 <meta name="robots" content="index, follow" />
 <meta name="googlebot" content="noarchive" />
 <link href="css/head.css" rel="stylesheet" type="text/css" />
@@ -52,29 +60,6 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 <link href="css/options.css" rel="stylesheet" type="text/css" />
 <link href="css/menu.css" rel="stylesheet" type="text/css" />
 <link href="css/full.css" rel="stylesheet" type="text/css" />
-<style type="text/css">
-#topnews {
-	height: 17px;
-	background-image: url(images/bitplace/topnews.jpg);
-	background-repeat: repeat-x;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	padding-left: 10px;
-	padding-top: 3px;
-}
-#topnews a:link{
-	color: #641A00;
-	text-decoration:none;
-}
-#topnews a:visited{
-	color: #641A00;
-	text-decoration:none;
-}
-#topnews a:hover{
-	color: #641A00;
-	text-decoration:underline;
-}
-</style>
 <script type="text/javascript" src="java/category.js"></script>
 <script type="text/javascript" src="java/browserdetect_lite.js"></script>
 <script type="text/javascript" src="java/opacity.js"></script>
@@ -82,14 +67,12 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 </head>
 
 <body>
-<div id="topnews"><a href="http://cvetove.romainrolland.org/anketa" target="_blank">Посетете новата рубрика "Вашето мнение". Темата е: "Харесват ли ви униформите?".</a></div>
-<div id="topLine"><!-- --></div>
 <div id="wrapper">
 <div id="header">
 	<div id="logo"></div>
 	<div id="slogan"><a href="index.php" target="_self" style="text-decoration:none;">
-			<span class="title">Цветове</span></a><br />
-	<span class="slogan">eлектронен вестник на ГПЧЕ "Ромен Ролан"</span></div>
+			<span class="title">Р¦РІРµС‚РѕРІРµ</span></a><br />
+	<span class="slogan">eР»РµРєС‚СЂРѕРЅРµРЅ РІРµСЃС‚РЅРёРє РЅР° Р“РџР§Р• "Р РѕРјРµРЅ Р РѕР»Р°РЅ"</span></div>
 			<div id="search">
 			<script language="javascript" type="text/javascript">
 			od_displayImage('bg_search', 'images/search', 426, 87, '', 'search');</script>
@@ -103,31 +86,31 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 						</form>
 				  	</div>
 					<div id="options">
-			  			<a id="option1" class="optionSelect" onclick="selectOption(this)" href="#">Всички статии</a>
-			  			<a id="option2" class="option" onclick="selectOption(this)" href="#">Журнал</a>
-			  			<a id="option3" class="option" onclick="selectOption(this)" href="#">Поезия</a>
-			  			<a id="option4" class="option" onclick="selectOption(this)" href="#">Проза</a>
-			  			<a id="option5" class="option" onclick="selectOption(this)" href="#">Арт</a>
+			  			<a id="option1" class="optionSelect" onclick="selectOption(this)" href="#">Р’СЃРёС‡РєРё СЃС‚Р°С‚РёРё</a>
+			  			<a id="option2" class="option" onclick="selectOption(this)" href="#">Р–СѓСЂРЅР°Р»</a>
+			  			<a id="option3" class="option" onclick="selectOption(this)" href="#">РџРѕРµР·РёСЏ</a>
+			  			<a id="option4" class="option" onclick="selectOption(this)" href="#">РџСЂРѕР·Р°</a>
+			  			<a id="option5" class="option" onclick="selectOption(this)" href="#">РђСЂС‚</a>
 					</div>
 				</div>
 
 </div>
 <div id="menu">
-	<div id="black-box"><a href="?q=journal&issue=<?php echo($issue); ?>" class="menu-text">журнал</a></div>
-	<div id="blue-box"><a href="?q=poetry&issue=<?php echo($issue); ?>" class="menu-text">поезия</a></div>
-	<div id="green-box"><a href="?q=fiction&issue=<?php echo($issue); ?>" class="menu-text">проза</a></div>
-	<div id="red-box"><a href="?q=art&issue=<?php echo($issue); ?>" class="menu-text">арт</a></div>
+	<div id="black-box"><a href="?q=journal&issue=<?php echo($issue); ?>" class="menu-text">Р¶СѓСЂРЅР°Р»</a></div>
+	<div id="blue-box"><a href="?q=poetry&issue=<?php echo($issue); ?>" class="menu-text">РїРѕРµР·РёСЏ</a></div>
+	<div id="green-box"><a href="?q=fiction&issue=<?php echo($issue); ?>" class="menu-text">РїСЂРѕР·Р°</a></div>
+	<div id="red-box"><a href="?q=art&issue=<?php echo($issue); ?>" class="menu-text">Р°СЂС‚</a></div>
 	<div id="issue">
 	  <form id="form1" name="form1" method="post" action="">
-	    <label class="select">Избери брой: </label><select name="issue" class="drop-menu" onchange="reload(form1)">
+	    <label class="select">РР·Р±РµСЂРё Р±СЂРѕР№: </label><select name="issue" class="drop-menu" onchange="reload(form1)">
 			<?php
-			$sql = mysql_query("Select * from `$issues` where `status` = '1'");
+			$sql = mysql_query("Select * from `issues` where `status` = '1'");
 			while($sel = mysql_fetch_array($sql)) {
-			$v = $sel['issue'];
-			if($v == $issue) { $p = "selected='selected'"; }
-			else { $p = " "; }
-			$n = $sel['name'];
-			echo("<option value=$v $p>$n</option>"); }
+            $v = $sel['issue'];
+            if($v == $issue) { $p = "selected='selected'"; }
+            else { $p = " "; }
+            $n = $sel['name'];
+            echo("<option value=$v $p>$n</option>"); }
 			?>
 	    </select>
 	  </form>
@@ -166,28 +149,28 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 		$id = $row['id'];
 		$i=$i+1;
 		$category = $row['cat'];
-		if($category == 'journal'){ $razdel = "журнал"; }
-		if($category == 'poetry'){ $razdel = "поезия"; }
-		if($category == 'fiction'){ $razdel = "проза"; }
-		if($category == 'art'){ $razdel = "арт"; }
+		if($category == 'journal'){ $razdel = "Р¶СѓСЂРЅР°Р»"; }
+		if($category == 'poetry'){ $razdel = "РїРѕРµР·РёСЏ"; }
+		if($category == 'fiction'){ $razdel = "РїСЂРѕР·Р°"; }
+		if($category == 'art'){ $razdel = "Р°СЂС‚"; }
 		$issue = $row['issue'];
 		$text = $row['text'];
 		$text = substr($text, 0, 400);
 		if(($text!='-') and ($text != '<p>-</p>')) { $text .= "..."; }
-		else { $text = "фотография"; }
+		else { $text = "С„РѕС‚РѕРіСЂР°С„РёСЏ"; }
 		$name = $row['name'];
-		if($name == '-'){$name = "фотография"; }
+		if($name == '-'){$name = "С„РѕС‚РѕРіСЂР°С„РёСЏ"; }
 		$msg .= "		
 		<div class='search_text'>$i. <a href='http://localhost/vestnik/index.php?q=$category&opt=$id&issue=$issue&method=full'>$name</a><br />
-		(категория: $razdel)<br />
+		(РєР°С‚РµРіРѕСЂРёСЏ: $razdel)<br />
 		<span class='search_text_main'>$text</i></b></em></p></span><br />
-		20 Август 2008
+		20 РђРІРіСѓСЃС‚ 2008
 		</div>";
 		} 
 		}
 		echo("		
-		<div class='search_title'>Търсене за: <b>$str</b><br />
-		Общо намерени: $i резултати. Търси за [ <b>$str</b> ] в <a href='http://www.google.com/search?q=$str' target='_blank'>
+		<div class='search_title'>РўСЉСЂСЃРµРЅРµ Р·Р°: <b>$str</b><br />
+		РћР±С‰Рѕ РЅР°РјРµСЂРµРЅРё: $i СЂРµР·СѓР»С‚Р°С‚Рё. РўСЉСЂСЃРё Р·Р° [ <b>$str</b> ] РІ <a href='http://www.google.com/search?q=$str' target='_blank'>
 		<img src='http://help2.joomla-bg.com/images/M_images/google.png' alt='Google' name='Google' align='top' border='0'></a>
 		</div>");
 		echo($msg);
@@ -197,14 +180,14 @@ echo("<meta http-equiv='Refresh'  content='0; url=index.php?issue=$issue'>"); di
 
 </div>
 <div id="footer">
-	<a href="index.php" target="_self" class="foot">Начало</a> | 
-	<a href="?q=journal&issue=<?php echo($issue); ?>" target="_self" class="foot">Журнал</a> | 
-	<a href="?q=poetry&issue=<?php echo($issue); ?>" target="_self" class="foot">Поезия</a> | 
-	<a href="?q=fiction&issue=<?php echo($issue); ?>" target="_self" class="foot">Проза</a> | 
-	<a href="?q=art&issue=<?php echo($issue); ?>" target="_self" class="foot">Арт</a> | 
-	<a href="index.php?q=us&issue=<?php echo($issue); ?>" target="_self" class="foot">За нас</a> | 
-	<a href="http://www.romainrolland.org" class="foot" target="_blank">ГПЧЕ "Ромен Ролан"</a><br />
-	<span class="footer">&copy;<?php echo($year); ?> Ученически вестник. Всички права запазени.</span>
+	<a href="index.php" target="_self" class="foot">РќР°С‡Р°Р»Рѕ</a> | 
+	<a href="?q=journal&issue=<?php echo($issue); ?>" target="_self" class="foot">Р–СѓСЂРЅР°Р»</a> | 
+	<a href="?q=poetry&issue=<?php echo($issue); ?>" target="_self" class="foot">РџРѕРµР·РёСЏ</a> | 
+	<a href="?q=fiction&issue=<?php echo($issue); ?>" target="_self" class="foot">РџСЂРѕР·Р°</a> | 
+	<a href="?q=art&issue=<?php echo($issue); ?>" target="_self" class="foot">РђСЂС‚</a> | 
+	<a href="index.php?q=us&issue=<?php echo($issue); ?>" target="_self" class="foot">Р—Р° РЅР°СЃ</a> | 
+	<a href="http://www.romainrolland.org" class="foot" target="_blank">Р“РџР§Р• "Р РѕРјРµРЅ Р РѕР»Р°РЅ"</a><br />
+	<span class="footer">&copy;<?php showYearSpan(); ?> РЈС‡РµРЅРёС‡РµСЃРєРё РІРµСЃС‚РЅРёРє. Р’СЃРёС‡РєРё РїСЂР°РІР° Р·Р°РїР°Р·РµРЅРё.</span>
 </div>
 </div>
 
