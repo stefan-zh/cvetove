@@ -1,62 +1,57 @@
 <?php
-include("admin/connect.php");
+
 $q = $_GET['q'];
+$id = $_GET['id'];
 $issue = $_GET['issue'];
-$opt = $_GET['opt'];
 $method = $_GET['method'];
 
-$titles = mysql_query("Select * from `$mysql_table` where `cat` = '$q' and `id` != $opt and `issue` = '$issue' order by `id` DESC");
-while($all = mysql_fetch_array($titles)) {
-$id = $all['id'];
-$title = $all['name'];
-$lines .="<a href='index.php?q=$q&opt=$id&issue=$issue&method=full' class='text-head' style='line-height:20px;'>$title</a><br /><br />"; }
+/**
+ * Р”СЂСѓРіРё СЃС‚Р°С‚РёРё
+ */
+$otherTitles = "Select `id`, `title` from `articles` where `cat` = '$q' and `id` != $id and `issue` = '$issue' order by `id` DESC";
+$otherTitles = mysql_query($otherTitles);
+while($row = mysql_fetch_assoc($otherTitles)) {
+   $row['link'] = "index.php?q=$q&id=$row[id]&issue=$issue&method=full";
+   $others[] = $row;
+}
 		
-$query = mysql_query("Select * from `$mysql_table` where `cat` = '$q' and `id` = $opt and `issue` = '$issue'");
-while($row = mysql_fetch_array($query)) {
-$id = $row['id'];
-$name = $row['name'];
-$date = $row['date'];
-$edit = $row['edit'];
-$author = $row['author'];
-$img = $row['img'];
-
-if($method == 'full') { $text = nl2br($row['text']); }
-
-$info .= "<div id='full-box-header'>$name</div>
-	<div id='full-box'>
-	<table width='100%' border='0' cellspacing='0' cellpadding='0'>
-  		<tr>
-    		<td valign='top' width='285'>
-			<img src='$img' width='285' height='220' class='pic'></td>
-			<td>$text<br /><br /><br />
-	<span class='author'>Автор: $author</span><br /><br /></td></tr></table></div>
-		<div id='info'>
-		<div id='edit'>Инфо:<br /><br />
-				Автор: $author<br />Публукуване: $date<br />
-				Последна редакция:<br />$edit<br /><br />
-				Коментари: 0<br /><br /></div></div>
-		<div id='info'>
-		<div id='edit'>Предишни творби:<br /><br />$lines<br /></div></div>" ; }
-		
+/**
+ * РР·Р±СЂР°РЅР°С‚Р° СЃС‚Р°С‚РёСЏ
+ */ 
+$articleQuery = "Select * from `articles` where `id` = $id";
+$articleQuery = mysql_query($articleQuery);
+while($row = mysql_fetch_assoc($articleQuery)) {
+   $row['text'] = nl2br($row['text']);
+   $article[] = $row;
+}
+$article = $article[0];
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<link href="../css/admin.css" rel="stylesheet" type="text/css" />
-<title>Untitled Document</title>
-</head>
 
-<body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <?php echo($err); ?>
   <tr>
     <td>
-	<div id="content"><?php echo($info); ?>			
+	<div id="content">
+   <div id="full-box-header"><?php echo $article['title']; ?></div>
+	<div id="full-box">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  		<tr>
+    		<td valign="top" width="285">
+			<img src="<?php echo $article['img']; ?>" width="285" height="220" class="pic"></td>
+			<td><?php echo $article['text']; ?><br /><br /><br />
+	<span class="author">РђРІС‚РѕСЂ: <?php echo $article['author']; ?></span><br /><br /></td></tr></table></div>
+		<div id="info">
+		<div id="edit">РРЅС„Рѕ:<br /><br />
+				РђРІС‚РѕСЂ: <?php echo $article['author']; ?><br />РџСѓР±Р»СѓРєСѓРІР°РЅРµ: <?php echo $article['date']; ?><br />
+				РџРѕСЃР»РµРґРЅР° СЂРµРґР°РєС†РёСЏ:<br /><?php echo $article['edit']; ?><br /><br />
+		</div></div>
+		<div id="info">
+		<div id="edit">Р”СЂСѓРіРё СЃС‚Р°С‚РёРё РѕС‚ Р±СЂРѕСЏ:<br /><br />
+      <?php foreach($others as $otherTitle): ?>
+      <a href="<?php echo $otherTitle['link']; ?>" class="text-head" style="line-height:20px;"><?php echo $otherTitle['title']; ?></a><br /><br />
+      <?php endforeach; ?>
+      </div></div>   
 	</div></td>
   </tr>
 </table>
-
-</body>
-</html>

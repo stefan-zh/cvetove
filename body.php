@@ -1,17 +1,15 @@
 <?php
 
-include("admin/connect.php");
-
 $issue = $_GET['issue'];
 
 /**
- * GLAVNA STATIQ
- * Izbirane na zaglavnata statiq
+ * ГЛАВНА СТАТИЯ
+ * Избиране на заглавната статия.
  */
 $mainQuery = "Select * from `articles` where `main` = 1 and `issue` = '$issue' Limit 1";
 $mainQuery = mysql_query($mainQuery);
 while($row = mysql_fetch_assoc($mainQuery)) {
-   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = nl2br($row['text']); 
    $row['text'] = mb_substr($row['text'], 0, 850, 'UTF-8');
    $main[] = $row;
@@ -21,26 +19,26 @@ if($main['text'] == '') { $main['err'] = "Липсва главна новина
 
 
 /**
- * JOURNAL
- * Izbira poslednite tri statii za kategoriq jurnal
+ * ЖУРНАЛ
+ * Избира последните три по дата статии за категория журнал.
  */
 $mainJournal = "Select * from `articles` where `cat` = 'journal' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3";
 $mainJournal = mysql_query($mainJournal);
 while($row = mysql_fetch_assoc($mainJournal)) {
-   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
    $journal[] = $row;
 }
 
 
 /**
- * POETRY
- * Izbira poslednite tri tvorbi ot kategoriq poeziq
+ * ПОЕЗИЯ
+ * Избира последните три творби по дата от категория поезия.
  */
 $mainPoetry = "Select * from `articles` where `cat` = 'poetry' and `main` = 2 and `issue` = '$issue' order by `id` Limit 1";
 $mainPoetry = mysql_query($mainPoetry);
 while($row = mysql_fetch_assoc($mainPoetry)){
-   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = nl2br($row['text']);
 	$poem = explode("<br />",$row['text']);
    $numWord = min(count($poem), 11);
@@ -53,26 +51,26 @@ $poetry = $poetry[0];
 
 
 /**
- * FICTION
- * Izbira poslednite tri tvorbi v kategoriq proza
+ * ПРОЗА
+ * Избира последните три по дата творби от категория проза.
  */
 $mainFiction = "Select * from `articles` where `cat` = 'fiction' and `main` = 0 and `issue` = '$issue' order by `id` DESC Limit 3";
 $mainFiction = mysql_query($mainFiction);
 while($row = mysql_fetch_assoc($mainFiction)) {
-   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
    $fiction[] = $row;
 }
 
 
 /**
- * ART
- * Izbira glavnata tvorba v kategoriq art
+ * АРТ
+ * Избира главната творба в категория арт.
  */
 $mainArt = "Select * from `articles` where `cat` = 'art' and `main` = 3 and `issue` = '$issue' order by `id` Limit 1";
 $mainArt = mysql_query($mainArt);
 while($row = mysql_fetch_assoc($mainArt)) {
-   $row['link'] = "?q=$row[cat]&opt=$row[id]&issue=$issue&method=full";
+   $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $art[] = $row;
    
    list($width, $height) = getimagesize("$row[img]");
@@ -119,7 +117,7 @@ $art = $art[0];
 	<td><div id="heading">Арт</div></td>
   </tr>
   <tr>
-   <!-- GLAVNA NOVINA -->
+   <!-- ГЛАВНА НОВИНА -->
     <td colspan="2" valign="top"><div id="main-box">
 		<a href="<?php echo $row['link']; ?>">
 		<img src="<?php echo $main['img']; ?>" width="285" height="220" class="pic" border="0"></a>
@@ -128,11 +126,11 @@ $art = $art[0];
          echo $main['text']."...";
          if($err)
             $readmore = "#";
-         else $readmore = $row['link'];
+         else $readmore = $main['link'];
       ?>&nbsp;
 		<a href="<?php echo($readmore); ?>" class="text-head">[чети още]</a><br /><br /></div></td>
     
-    <!-- GLAVNA ART -->
+    <!-- ГЛАВНА АРТ -->
     <td valign="top"><div id="box">
     <div id='art'><a href='<?php echo $art['link']; ?>'>
 		<img src='<?php echo $art['img']; ?>' <?php echo $n; ?> class='art' border='0'></a><br>
@@ -150,7 +148,7 @@ $art = $art[0];
   </tr>
   <tr>
    
-   <!-- JOURNAL LIST -->
+   <!-- ЖУРНАЛ -->
    <td valign="top"><div id="box">
 	<?php foreach($journal as $jbox): ?>
       <div id='article'><a href='<?php echo $jbox['link']; ?>'>
@@ -160,13 +158,13 @@ $art = $art[0];
    <?php endforeach; ?>
    </div></td>
    
-   <!-- POETRY LIST -->
+   <!-- ПОЕЗИЯ -->
    <td valign="top"><div id="box">
-   <div id='poem'><a href='?q=$pcat&opt=$pid&issue=$issue&method=full' class='poem-head'><?php echo $poetry['title']; ?></a><br>
+   <div id='poem'><a href='<?php echo $poetry['link']; ?>' class='poem-head'><?php echo $poetry['title']; ?></a><br>
    <span class='poem-slogan'>(<?php echo $poetry['author']; ?>)</span><br><br /><?php echo $poetry['text']; ?></b></i></u>...</div>
    </div></td>
    
-   <!-- FICTION LIST -->
+   <!-- ПРОЗА -->
    <td valign="top"><div id="box">
 	<?php foreach($fiction as $fbox): ?>
    <div id='article'><a href='<?php echo $fbox['link']; ?>'>

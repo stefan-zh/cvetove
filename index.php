@@ -3,9 +3,9 @@
 include("admin/connect.php");
 
 /**
- * Pokazva ot koq godina e zapo4nal vestnika i do
- * koq godina prodaljava. Tozi red se pokazva vav
- * footer-a
+ * Показва от коя година е започнал вестника и до
+ * коя година продължава. Този ред се показва във
+ * footer-а.
  */
 function showYearSpan(){
    $begindate = "2008";
@@ -17,10 +17,10 @@ function showYearSpan(){
 }
 
 /**
- * Izbira koi broi da pokaje na na4alnata stranica.
- * Ako potrebitelqt vliza za 1 put, pokazva posledniqt broi
- * Ako potrebitelqt e izbral broi ot menuto, togava
- * se pokazva izbraniqt broi.
+ * Избира кой брой да покаже на началната страница.
+ * Ако не е селектиран брой от менюто, тогава се 
+ * показва последният брой. Ако обаче такъв е избран,
+ * тогава се показва избраният брой.
  */
 if(!isset($_GET['issue'])){
    $lastIssueQuery = "SELECT * FROM `issues` ORDER BY `id` DESC LIMIT 1";
@@ -117,66 +117,73 @@ else {
     </div>
 </div>
 <div id="body1">
-<?php 
-		if((!$string) or (!$str)){
-		$q = $_GET['q'];
-		$method = $_GET['method'];
-		if(($q=='') and ($method!='full')) { include("body.php"); }
-		if(($q=='journal') and ($method!='full')){ include("review-j.php"); }
-		if(($q=='fiction') and ($method!='full')){ include("review-f.php"); }
-		if(($q=='poetry') and ($method!='full')){ include("review-p.php"); }
-		if(($q=='art') and ($method!='full')){ include("review-a.php"); }
-		if(($q!='poetry') and ($q!='art') and ($method=='full')) { include("view.php"); }
-		if(($q=='poetry') and ($method=='full')) { include("pview.php"); }
-		if(($q=='art') and ($method=='full')) { include("aview.php"); }
-		if($q=='us') { include("us.php"); } 
-		}
-		else { 
-		$i=0;
-		if (!(isset($pagenum))){ $pagenum = 1; } 
-		$page_rows = 100;
-		$query = mysql_query($zaiavka);
-		$rows = mysql_num_rows($query);
-		$last = ceil($rows/$page_rows);
-		if ($pagenum < 1){ $pagenum = 1; }
-		elseif (($pagenum > $last) and ($rows!='0')) { $pagenum = $last; }
-		$max = 'limit ' .($pagenum - 1) * $page_rows .', ' .$page_rows;  
-		$zaiavka .= " $max ";
-		$pagequery = mysql_query($zaiavka);
-		if(!$pagequery){ }
-		else{
-		while($row = mysql_fetch_array($pagequery)){
-		$id = $row['id'];
-		$i=$i+1;
-		$category = $row['cat'];
-		if($category == 'journal'){ $razdel = "журнал"; }
-		if($category == 'poetry'){ $razdel = "поезия"; }
-		if($category == 'fiction'){ $razdel = "проза"; }
-		if($category == 'art'){ $razdel = "арт"; }
-		$issue = $row['issue'];
-		$text = $row['text'];
-		$text = substr($text, 0, 400);
-		if(($text!='-') and ($text != '<p>-</p>')) { $text .= "..."; }
-		else { $text = "фотография"; }
-		$name = $row['name'];
-		if($name == '-'){$name = "фотография"; }
-		$msg .= "		
-		<div class='search_text'>$i. <a href='http://localhost/vestnik/index.php?q=$category&opt=$id&issue=$issue&method=full'>$name</a><br />
-		(категория: $razdel)<br />
-		<span class='search_text_main'>$text</i></b></em></p></span><br />
-		20 Август 2008
-		</div>";
-		} 
-		}
-		echo("		
-		<div class='search_title'>Търсене за: <b>$str</b><br />
-		Общо намерени: $i резултати. Търси за [ <b>$str</b> ] в <a href='http://www.google.com/search?q=$str' target='_blank'>
-		<img src='http://help2.joomla-bg.com/images/M_images/google.png' alt='Google' name='Google' align='top' border='0'></a>
-		</div>");
-		echo($msg);
-		echo("<div style='margin-bottom:30px'><!-- --></div>");
- 		}
-		?>
+<?php
+// ако няма избрана категория, покажи главна страница
+if(!isset($_GET['q']))
+   include 'body.php';
+// ако е избрана категория, намери в коя рамка да бъде
+// поставена статията
+else {
+   $q = $_GET['q'];
+   $method = $_GET['method'];
+   if($method != 'full'){
+      if($q == 'journal'){ include("review-j.php"); }
+      if($q == 'fiction'){ include("review-f.php"); }
+      if($q == 'poetry'){ include("review-p.php"); }
+      if($q == 'art'){ include("review-a.php"); }
+   }
+   else {
+      if($q=='poetry') { include("pview.php"); }
+      else if($q=='art') { include("aview.php"); }
+      else include("view.php");
+   }	
+	if($q=='us') { include("us.php"); } 
+   // else { 
+		// $i=0;
+		// if (!(isset($pagenum))){ $pagenum = 1; } 
+		// $page_rows = 100;
+		// $query = mysql_query($zaiavka);
+		// $rows = mysql_num_rows($query);
+		// $last = ceil($rows/$page_rows);
+		// if ($pagenum < 1){ $pagenum = 1; }
+		// elseif (($pagenum > $last) and ($rows!='0')) { $pagenum = $last; }
+		// $max = 'limit ' .($pagenum - 1) * $page_rows .', ' .$page_rows;  
+		// $zaiavka .= " $max ";
+		// $pagequery = mysql_query($zaiavka);
+		// if(!$pagequery){ }
+		// else{
+		// while($row = mysql_fetch_array($pagequery)){
+		// $id = $row['id'];
+		// $i=$i+1;
+		// $category = $row['cat'];
+		// if($category == 'journal'){ $razdel = "журнал"; }
+		// if($category == 'poetry'){ $razdel = "поезия"; }
+		// if($category == 'fiction'){ $razdel = "проза"; }
+		// if($category == 'art'){ $razdel = "арт"; }
+		// $issue = $row['issue'];
+		// $text = $row['text'];
+		// $text = substr($text, 0, 400);
+		// if(($text!='-') and ($text != '<p>-</p>')) { $text .= "..."; }
+		// else { $text = "фотография"; }
+		// $name = $row['name'];
+		// if($name == '-'){$name = "фотография"; }
+		// $msg .= "		
+		// <div class='search_text'>$i. <a href='http://localhost/vestnik/index.php?q=$category&opt=$id&issue=$issue&method=full'>$name</a><br />
+		// (категория: $razdel)<br />
+		// <span class='search_text_main'>$text</i></b></em></p></span><br />
+		// 20 Август 2008
+		// </div>";
+		// } 
+		// }
+		// echo("		
+		// <div class='search_title'>Търсене за: <b>$str</b><br />
+		// Общо намерени: $i резултати. Търси за [ <b>$str</b> ] в <a href='http://www.google.com/search?q=$str' target='_blank'>
+		// <img src='http://help2.joomla-bg.com/images/M_images/google.png' alt='Google' name='Google' align='top' border='0'></a>
+		// </div>");
+		// echo($msg);
+		// echo("<div style='margin-bottom:30px'><!-- --></div>");
+}
+?>
 
 </div>
 <div id="footer">
