@@ -1,44 +1,45 @@
 <?php
-include("admin/connect.php");
+
 $issue = $_GET['issue'];
-$target = 350;
-$query = mysql_query("Select * from `$mysql_table` where `cat` = 'art' and `issue` = '$issue' order by `id` DESC");
-while($row = mysql_fetch_array($query)) {
-$id = $row['id'];
-$cat = $row['cat'];
-$name = $row['name'];
-$date = $row['date'];
-$edit = $row['edit'];
-$author = $row['author'];
-$img = $row['img'];
-$str = nl2br($row['text']);
-$text = substr($str, 0, 950);
 
-list($width, $height) = getimagesize("$img");
-if(($width<$target) and ($height<$target)) { $in = "width='$width' height='$height'"; }
-else if (($width > $height) and ($height > $target)) { $percentage = ($target / $width);
-$width = round($width * $percentage);
-$height = round($height * $percentage);
-$in = "width='$width' height='$height'";} 
-else { $percentage = ($target / $height); 
-$width = round($width * $percentage);
-$height = round($height * $percentage);
-$in = "width='$width' height='$height'"; }
+/**
+ * РЎСЉРґСЉСЂР¶Р°РЅРёРµ СЃ С‚РІРѕСЂР±РёС‚Рµ РѕС‚ СЂР°Р·РґРµР» Р°СЂС‚.
+ */
+$articlesQuery = "Select * from `articles` where `cat` = 'art' and `issue` = '$issue' order by `id` DESC";
+$articlesQuery = mysql_query($articlesQuery);
+while($row = mysql_fetch_assoc($articlesQuery)) {
+   $row['text'] = nl2br($row['text']);
+   $row['text'] = mb_substr($row['text'], 0, 950, 'UTF-8');
+   $row['link'] = "index.php?q=art&id=$row[id]&issue=$issue&method=full";
 
-$info .= "<div id='art-box'><a href='index.php?q=$cat&opt=$id&issue=$issue&method=full'><img src='$img'". $in ." border='0' class='artpic' /><br />Автор: $author<br />Публукуване: $date<br />Последна редакция: $edit</a></div>" ; }	
+   $target = 350;
+   list($width, $height) = getimagesize("$row[img]");
+   if(($width<$target) and ($height<$target))
+      $in = "width='$width' height='$height'";
+   else if (($width > $height) and ($height > $target)) {
+      $percentage = ($target / $width);
+      $width = round($width * $percentage);
+      $height = round($height * $percentage);
+      $in = "width='$width' height='$height'";
+   } 
+   else { 
+      $percentage = ($target / $height); 
+      $width = round($width * $percentage);
+      $height = round($height * $percentage);
+      $in = "width='$width' height='$height'";
+   }
+
+   $row['in'] = $in;
+   $articles[] = $row;
+}
+	
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<link href="../css/admin.css" rel="stylesheet" type="text/css" />
-<title>Untitled Document</title>
-</head>
 
-<body>
-<div id="main-head" style="width:920px; margin-bottom: 10px;">Арт</div>
+<div id="main-head" style="width:920px; margin-bottom: 10px;">РђСЂС‚</div>
   
-  <div id="artwrapper"><?php echo($info); ?></div>
- 
-</body>
-</html>
+<div id="artwrapper">
+<?php foreach($articles as $article): ?>
+<div id="art-box"><a href="<?php echo $article['link']; ?>"><img src="<?php echo $article['img']; ?>" <?php echo $article['in']; ?> border="0" class="artpic" /><br />РђРІС‚РѕСЂ: <?php echo $article['author']; ?><br />РџСѓР±Р»СѓРєСѓРІР°РЅРµ: <?php echo $article['date']; ?><br />РџРѕСЃР»РµРґРЅР° СЂРµРґР°РєС†РёСЏ: <?php echo $article['edit']; ?></a></div>
+<?php endforeach; ?>
+</div>
+

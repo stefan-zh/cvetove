@@ -127,10 +127,9 @@ else {
    $q = $_GET['q'];
    $method = $_GET['method'];
    if($method != 'full'){
-      if($q == 'journal'){ include("review-j.php"); }
-      if($q == 'fiction'){ include("review-f.php"); }
       if($q == 'poetry'){ include("review-p.php"); }
-      if($q == 'art'){ include("review-a.php"); }
+      else if($q == 'art'){ include("review-a.php"); }
+      else { include("review.php"); }
    }
    else {
       if($q=='poetry') { include("pview.php"); }

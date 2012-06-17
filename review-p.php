@@ -1,52 +1,46 @@
 <?php
-include("admin/connect.php");
+
 $issue = $_GET['issue'];
-$query = mysql_query("Select * from `$mysql_table` where `cat` = 'poetry' and `issue` = '$issue' order by `id` DESC");
-while($row = mysql_fetch_array($query)) {
-$id = $row['id'];
-$name = $row['name'];
-$date = $row['date'];
-$edit = $row['edit'];
-$author = $row['author'];
-$img = $row['img'];
-$str = nl2br($row['text']);
-$text = substr($str, 0, 350);
 
-$info .= "<div id='full-box-header'>$name</div>
-	<div id='full-box'>
-	<table width='100%' border='0' cellspacing='0' cellpadding='0'>
-  		<tr>
-    		<td valign='top' width='285'><img src='$img' width='285' height='220' class='pic'></td>
-			<td>$text</b></i></u>... &nbsp;<br />
-		<a href='index.php?q=$q&opt=$id&issue=$issue&method=full' class='text-head'>[чети още]</a><br /><br /></td>
-		</tr>
-		</table>
-		</div>
-		<div id='info'>
-		<div id='edit'>Инфо:<br /><br />
-				Автор: $author<br />Публукуване: $date<br />
-				Последна редакция:<br />$edit<br /><br />
-				Коментари: 0<br /><br /></div></div>" ; }	
+/**
+ * РЎСЉРґСЉСЂР¶Р°РЅРёРµ РЅР° СЃС‚Р°С‚РёРё РѕС‚ РєР°С‚РµРіРѕСЂРёСЏ РїРѕРµР·РёСЏ.
+ */
+$articlesQuery = "Select * from `articles` where `cat` = 'poetry' and `issue` = '$issue' order by `id` DESC";
+$articlesQuery = mysql_query($articlesQuery);
+while($row = mysql_fetch_assoc($articlesQuery)) {
+   $row['text'] = nl2br($row['text']);
+   $row['text'] = mb_substr($row['text'], 0, 350, 'UTF-8');
+   $row['link'] = "index.php?q=poetry&id=$row[id]&issue=$issue&method=full";
+   $articles[] = $row;
+}
+
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-<link href="../css/admin.css" rel="stylesheet" type="text/css" />
-<title>Untitled Document</title>
-</head>
 
-<body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <?php echo($err); ?>
   <tr>
-    <td><div id="main-head" style="width:920px;">Поезия</div></td>
+    <td><div id="main-head" style="width:920px;">РџРѕРµР·РёСЏ</div></td>
   </tr>
   <tr>
     <td>
-	<div id="content"><?php echo($info); ?>	</div></td>
+	<div id="content">
+   <?php foreach($articles as $article): ?>
+   <div id="full-box-header"><?php echo $article['title']; ?></div>
+	<div id="full-box">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  		<tr>
+    		<td valign="top" width="285"><img src="<?php echo $article['img']; ?>" width="285" height="220" class="pic"></td>
+			<td><?php echo $article['text']; ?></b></i></u>... &nbsp;<br />
+		<a href="<?php echo $article['link']; ?>" class="text-head">[С‡РµС‚Рё РѕС‰Рµ]</a><br /><br /></td>
+		</tr>
+		</table>
+		</div>
+		<div id="info">
+		<div id="edit">РРЅС„Рѕ:<br /><br />
+				РђРІС‚РѕСЂ: <?php echo $article['author']; ?><br />РџСѓР±Р»СѓРєСѓРІР°РЅРµ: <?php echo $article['date']; ?><br />
+				РџРѕСЃР»РµРґРЅР° СЂРµРґР°РєС†РёСЏ:<br /><?php echo $article['edit']; ?><br /><br />
+		</div></div>
+   <?php endforeach; ?>
+   </div></td>
   </tr>
 </table>
-
-</body>
-</html>
