@@ -22,7 +22,7 @@ function showYearSpan(){
  * показва последният брой. Ако обаче такъв е избран,
  * тогава се показва избраният брой.
  */
-if(!isset($_GET['issue'])){
+if(!isset($_GET['issue']) and !isset($_REQUEST['submit'])){
    $lastIssueQuery = "SELECT * FROM `issues` ORDER BY `id` DESC LIMIT 1";
    $lastIssueQuery = mysql_query($lastIssueQuery);
    while($select = mysql_fetch_assoc($lastIssueQuery)){
@@ -60,7 +60,6 @@ else {
 <link href="css/options.css" rel="stylesheet" type="text/css" />
 <link href="css/menu.css" rel="stylesheet" type="text/css" />
 <link href="css/full.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="java/category.js"></script>
 <script type="text/javascript" src="java/browserdetect_lite.js"></script>
 <script type="text/javascript" src="java/opacity.js"></script>
 <script type="text/javascript" src="java/search.js"></script>
@@ -73,36 +72,37 @@ else {
 	<div id="slogan"><a href="index.php" target="_self" style="text-decoration:none;">
 			<span class="title">Цветове</span></a><br />
 	<span class="slogan">eлектронен вестник на ГПЧЕ "Ромен Ролан"</span></div>
-			<div id="search">
-			<script language="javascript" type="text/javascript">
-			od_displayImage('bg_search', 'images/search', 426, 87, '', 'search');</script>
-			</div>
-				<div id="search-content">
-					<div class="search-form">
-						<form name="searchForm" id="searchForm" method="get" action="#" onsubmit="return mysql_search(this, 'http://localhost/vestnik/');">
-						<input name="hidden" type="hidden" value="option1" />
-						<input  name="words" type="text"  class="input" />
-						<input name="submit" type="image" src="images/empty.gif" class="button" />
-						</form>
-				  	</div>
-					<div id="options">
-			  			<a id="option1" class="optionSelect" onclick="selectOption(this)" href="#">Всички статии</a>
-			  			<a id="option2" class="option" onclick="selectOption(this)" href="#">Журнал</a>
-			  			<a id="option3" class="option" onclick="selectOption(this)" href="#">Поезия</a>
-			  			<a id="option4" class="option" onclick="selectOption(this)" href="#">Проза</a>
-			  			<a id="option5" class="option" onclick="selectOption(this)" href="#">Арт</a>
-					</div>
-				</div>
-
+	<div id="search">
+      <script language="javascript" type="text/javascript">
+         od_displayImage('bg_search', 'images/search', 426, 87, '', 'search');
+      </script>
+	</div>
+	<div id="search-content">
+		<div class="search-form">
+         <form action="index.php" name="searchForm" id="searchForm" method="post">
+				<input name="hidden" type="hidden" value="all-opt" />
+				<input name="words" type="text"  class="input" />
+            <input name="submit" type="submit" class="button" value="" />
+			</form>
+		</div>
+		<div id="options">
+         <a id="all-opt" class="optionSelect" onclick="selectOption(this)" href="#">Всички статии</a>
+			<a id="journal-opt" class="option" onclick="selectOption(this)" href="#">Журнал</a>
+			<a id="poetry-opt" class="option" onclick="selectOption(this)" href="#">Поезия</a>
+			<a id="fiction-opt" class="option" onclick="selectOption(this)" href="#">Проза</a>
+			<a id="art-opt" class="option" onclick="selectOption(this)" href="#">Арт</a>
+      </div>
+   </div>
 </div>
+
 <div id="menu">
 	<div id="black-box"><a href="?q=journal&issue=<?php echo($issue); ?>" class="menu-text">журнал</a></div>
 	<div id="blue-box"><a href="?q=poetry&issue=<?php echo($issue); ?>" class="menu-text">поезия</a></div>
 	<div id="green-box"><a href="?q=fiction&issue=<?php echo($issue); ?>" class="menu-text">проза</a></div>
 	<div id="red-box"><a href="?q=art&issue=<?php echo($issue); ?>" class="menu-text">арт</a></div>
 	<div id="issue">
-	  <form id="form1" name="form1" method="post" action="">
-	    <label class="select">Избери брой: </label><select name="issue" class="drop-menu" onchange="reload(form1)">
+	  <form id="issues" name="issues" method="post" action="">
+	    <label class="select">Избери брой: </label><select name="issue" class="drop-menu" onchange="reload(issues)">
 			<?php
 			$sql = mysql_query("Select * from `issues` where `status` = '1'");
 			while($sel = mysql_fetch_array($sql)) {
@@ -118,9 +118,15 @@ else {
 </div>
 <div id="body1">
 <?php
+// ако е използвана търсачката, покажи рамката за търсене
+if(isset($_REQUEST['submit'])){
+   include 'search.php';
+}
+
 // ако няма избрана категория, покажи главна страница
-if(!isset($_GET['q']))
+else if(!isset($_GET['q']))
    include 'body.php';
+
 // ако е избрана категория, намери в коя рамка да бъде
 // поставена статията
 else {
@@ -137,50 +143,7 @@ else {
       else include("view.php");
    }	
 	if($q=='us') { include("us.php"); } 
-   // else { 
-		// $i=0;
-		// if (!(isset($pagenum))){ $pagenum = 1; } 
-		// $page_rows = 100;
-		// $query = mysql_query($zaiavka);
-		// $rows = mysql_num_rows($query);
-		// $last = ceil($rows/$page_rows);
-		// if ($pagenum < 1){ $pagenum = 1; }
-		// elseif (($pagenum > $last) and ($rows!='0')) { $pagenum = $last; }
-		// $max = 'limit ' .($pagenum - 1) * $page_rows .', ' .$page_rows;  
-		// $zaiavka .= " $max ";
-		// $pagequery = mysql_query($zaiavka);
-		// if(!$pagequery){ }
-		// else{
-		// while($row = mysql_fetch_array($pagequery)){
-		// $id = $row['id'];
-		// $i=$i+1;
-		// $category = $row['cat'];
-		// if($category == 'journal'){ $razdel = "журнал"; }
-		// if($category == 'poetry'){ $razdel = "поезия"; }
-		// if($category == 'fiction'){ $razdel = "проза"; }
-		// if($category == 'art'){ $razdel = "арт"; }
-		// $issue = $row['issue'];
-		// $text = $row['text'];
-		// $text = substr($text, 0, 400);
-		// if(($text!='-') and ($text != '<p>-</p>')) { $text .= "..."; }
-		// else { $text = "фотография"; }
-		// $name = $row['name'];
-		// if($name == '-'){$name = "фотография"; }
-		// $msg .= "		
-		// <div class='search_text'>$i. <a href='http://localhost/vestnik/index.php?q=$category&opt=$id&issue=$issue&method=full'>$name</a><br />
-		// (категория: $razdel)<br />
-		// <span class='search_text_main'>$text</i></b></em></p></span><br />
-		// 20 Август 2008
-		// </div>";
-		// } 
-		// }
-		// echo("		
-		// <div class='search_title'>Търсене за: <b>$str</b><br />
-		// Общо намерени: $i резултати. Търси за [ <b>$str</b> ] в <a href='http://www.google.com/search?q=$str' target='_blank'>
-		// <img src='http://help2.joomla-bg.com/images/M_images/google.png' alt='Google' name='Google' align='top' border='0'></a>
-		// </div>");
-		// echo($msg);
-		// echo("<div style='margin-bottom:30px'><!-- --></div>");
+   
 }
 ?>
 
