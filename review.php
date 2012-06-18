@@ -10,6 +10,7 @@ $articlesQuery = mysql_query($articlesQuery);
 while($row = mysql_fetch_assoc($articlesQuery)) {
    $row['text'] = nl2br($row['text']);
    $row['text'] = mb_substr($row['text'], 0, 950, 'UTF-8');
+   $row['text'] = closetags($row['text']);
    $row['link'] = "index.php?q=$q&id=$row[id]&issue=$issue&method=full";
    $articles[] = $row;
 }
@@ -30,7 +31,7 @@ while($row = mysql_fetch_assoc($articlesQuery)) {
 	<div id="content">
    <?php foreach($articles as $article): ?>
    <div id="full-box-header"><?php echo $article['title']; ?></div>
-	<div id="full-box"><img src="<?php echo $article['img']; ?>" width="285" height="220" class="pic"><?php echo $article['text']; ?></b></i></u>... &nbsp;
+	<div id="full-box"><img src="<?php echo $article['img']; ?>" width="285" height="220" class="pic"><?php echo $article['text']; ?>... &nbsp;
 		<a href="<?php echo $article['link']; ?>" class="text-head">[чети още]</a><br /><br /></div>
 		<div id="info">
 		<div id="edit">Инфо:<br /><br />

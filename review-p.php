@@ -10,6 +10,7 @@ $articlesQuery = mysql_query($articlesQuery);
 while($row = mysql_fetch_assoc($articlesQuery)) {
    $row['text'] = nl2br($row['text']);
    $row['text'] = mb_substr($row['text'], 0, 350, 'UTF-8');
+   $row['text'] = closetags($row['text']);
    $row['link'] = "index.php?q=poetry&id=$row[id]&issue=$issue&method=full";
    $articles[] = $row;
 }
@@ -30,7 +31,7 @@ while($row = mysql_fetch_assoc($articlesQuery)) {
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
   		<tr>
     		<td valign="top" width="285"><img src="<?php echo $article['img']; ?>" width="285" height="220" class="pic"></td>
-			<td><?php echo $article['text']; ?></b></i></u>... &nbsp;<br />
+			<td><?php echo $article['text']; ?>... &nbsp;<br />
 		<a href="<?php echo $article['link']; ?>" class="text-head">[чети още]</a><br /><br /></td>
 		</tr>
 		</table>

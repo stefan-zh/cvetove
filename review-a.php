@@ -10,6 +10,7 @@ $articlesQuery = mysql_query($articlesQuery);
 while($row = mysql_fetch_assoc($articlesQuery)) {
    $row['text'] = nl2br($row['text']);
    $row['text'] = mb_substr($row['text'], 0, 950, 'UTF-8');
+   $row['text'] = closetags($row['text']);
    $row['link'] = "index.php?q=art&id=$row[id]&issue=$issue&method=full";
 
    $target = 350;

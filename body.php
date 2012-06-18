@@ -27,6 +27,7 @@ $mainJournal = mysql_query($mainJournal);
 while($row = mysql_fetch_assoc($mainJournal)) {
    $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
+   $row['text'] = closetags($row['text']);
    $journal[] = $row;
 }
 
@@ -40,6 +41,7 @@ $mainPoetry = mysql_query($mainPoetry);
 while($row = mysql_fetch_assoc($mainPoetry)){
    $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = nl2br($row['text']);
+   $row['text'] = closetags($row['text']);
 	$poem = explode("<br />",$row['text']);
    $numWord = min(count($poem), 11);
    for($i=0; $i< $numWord; $i++)
@@ -59,6 +61,7 @@ $mainFiction = mysql_query($mainFiction);
 while($row = mysql_fetch_assoc($mainFiction)) {
    $row['link'] = "?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = mb_substr($row['text'], 0, 65, 'UTF-8');
+   $row['text'] = closetags($row['text']);
    $fiction[] = $row;
 }
 
@@ -119,7 +122,7 @@ $art = $art[0];
   <tr>
    <!-- ГЛАВНА НОВИНА -->
     <td colspan="2" valign="top"><div id="main-box">
-		<a href="<?php echo $row['link']; ?>">
+		<a href="<?php echo $main['link']; ?>">
 		<img src="<?php echo $main['img']; ?>" width="285" height="220" class="pic" border="0"></a>
       <?php 
          echo $err; 
@@ -154,14 +157,14 @@ $art = $art[0];
       <div id='article'><a href='<?php echo $jbox['link']; ?>'>
       <img src='<?php echo $jbox['ico']; ?>' width='60' height='60' class='ico' border='0'></a>
       <a href='<?php echo $jbox['link']; ?>' class='text-head'><?php echo $jbox['title']; ?></a><br>
-      <div id='text'><?php echo $jbox['text']; ?></b></i></u>...</div></div>
+      <div id='text'><?php echo $jbox['text']; ?>...</div></div>
    <?php endforeach; ?>
    </div></td>
    
    <!-- ПОЕЗИЯ -->
    <td valign="top"><div id="box">
    <div id='poem'><a href='<?php echo $poetry['link']; ?>' class='poem-head'><?php echo $poetry['title']; ?></a><br>
-   <span class='poem-slogan'>(<?php echo $poetry['author']; ?>)</span><br><br /><?php echo $poetry['text']; ?></b></i></u>...</div>
+   <span class='poem-slogan'>(<?php echo $poetry['author']; ?>)</span><br><br /><?php echo $poetry['text']; ?>...</div>
    </div></td>
    
    <!-- ПРОЗА -->
@@ -170,7 +173,7 @@ $art = $art[0];
    <div id='article'><a href='<?php echo $fbox['link']; ?>'>
    <img src='<?php echo $fbox['ico']; ?>' width='60' height='60' class='ico2' border='0'></a>
    <a href='<?php echo $fbox['link']; ?>' class='text-head'><?php echo $fbox['title']; ?></a><br>
-   <div id='text'><?php echo $fbox['text']; ?></b></i></u>...</div></div>
+   <div id='text'><?php echo $fbox['text']; ?>...</div></div>
    <?php endforeach; ?>
 	</div></td>
   </tr>

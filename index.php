@@ -1,6 +1,7 @@
 <?php
 
-include("admin/connect.php");
+include 'admin/connect.php';
+include 'lib.php';
 
 /**
  * Показва от коя година е започнал вестника и до
@@ -132,7 +133,9 @@ else if(!isset($_GET['q']))
 else {
    $q = $_GET['q'];
    $method = $_GET['method'];
-   if($method != 'full'){
+   if($q=='us')
+      include 'us.php';
+   else if($method != 'full'){
       if($q == 'poetry'){ include("review-p.php"); }
       else if($q == 'art'){ include("review-a.php"); }
       else { include("review.php"); }
@@ -141,8 +144,7 @@ else {
       if($q=='poetry') { include("pview.php"); }
       else if($q=='art') { include("aview.php"); }
       else include("view.php");
-   }	
-	if($q=='us') { include("us.php"); } 
+   }
    
 }
 ?>

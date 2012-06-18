@@ -7,37 +7,26 @@
 $category = substr($_POST['hidden'], 0, -4);
 $string = $_POST['words'];
 $_POST['hidden'] = $category;
-pretty($_POST);
 
-$cat = $_GET['cat'];
-if($cat == 'journal'){
-$catstring = "( cat = 'journal' ) and "; }
-elseif($cat == 'poetry'){
-$catstring = "( cat = 'poetry' ) and "; }
-elseif($cat == 'fiction'){
-$catstring = "( cat = 'fiction' ) and "; }
-elseif($cat == 'art'){
-$catstring = "( cat = 'art' ) and "; }
-else { $catstring = ''; }
-$str = $_GET['string'];
-$remove_these = array (',','.','!','`','~','@'.'#','$','%','^','&','*','(',')','-','=','<','>','?','|','/','{','}',':','+','-', '_' );
-$str = str_replace ( $remove_these , ' ' , $str );
-$str = str_replace ( '  ' , ' ' , $str ); 
-$str = trim($str);
-$string = explode ( ' ' , $str );
-$size = sizeof($string);
-if($str!=''){
-$zaiavka = 'select * from `articles` where ' .$catstring;
-$x = 0;
-foreach ( $string as $word ) {
-if($x==0){
-$zaiavka .= '( text like \'%' . $word . '%\' or name like \'%' . $word . '%\' or author like \'%' . $word . '%\' ';
-	$x=1; }
-else {
-	$zaiavka .= ' or text like \'%' . $word . '%\' or name like \'%' . $word . '%\' or author like \'%' . $word . '%\' '; }
+if($category != 'all')
+   $cat = " AND `cat` = '$category'";
+else
+   $cat = "";
+$searchQuery = "
+   SELECT * FROM `articles` 
+   WHERE (`title` LIKE '%{$string}%'
+   OR `author` LIKE '%{$string}%'
+   OR `text` LIKE '%{$string}%')" . $cat . "
+   ORDER BY `id` DESC";
+$searchQuery = mysql_query($searchQuery);
+while($row = mysql_fetch_assoc($searchQuery)){
+   $row['link'] = "index.php?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
+   $row['text'] = strip_tags($row['text']);
+   $row['text'] = mb_substr(nl2br($row['text']), 0, 400, 'UTF-8');
+   $results[] = $row;
 }
-$zaiavka .= ') ';
-}
+
+//pretty($results);
 
    // else { 
 		// $i=0;
@@ -84,3 +73,15 @@ $zaiavka .= ') ';
 		// echo($msg);
 		// echo("<div style='margin-bottom:30px'><!-- --></div>");
 ?>
+
+<div class="search_title">Търсене за: <b><?php echo $string; ?></b><br />
+Общо намерени: <?php echo count($results); ?> резултати. Търси за [ <b><?php echo $string; ?></b> ] в <a href="http://www.google.com/search?q=<?php echo $string; ?>" target="_blank">
+<img src="images/Googlelogo.png" alt="Google" name="Google" align="top" border="0" height="22"></a>
+</div>
+
+<?php foreach($results as $result): ?>
+<div class="search_text"><a href="<?php echo $result['link']; ?>"><?php echo $result['title']; ?></a><br />
+<?php echo $result['date']; ?> | категория: <?php echo $result['cat']; ?> | автор: <?php echo $result['author']; ?><br /><br />
+<span class="search_text_main"><?php echo $result['text']; ?>
+</div>
+<?php endforeach; ?>
