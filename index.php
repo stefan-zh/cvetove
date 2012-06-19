@@ -64,7 +64,27 @@ else {
 <script type="text/javascript" src="java/browserdetect_lite.js"></script>
 <script type="text/javascript" src="java/opacity.js"></script>
 <script type="text/javascript" src="java/search.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 </head>
+
+<script>
+$(document).ready(function() {
+   /**
+    * Сменя класовете на избраните категории от search лентата.
+    * Също текстът, който е търсен, се въвежда автоматично
+    * като default в search лентата.
+    */    
+   if(<?php echo isset($_POST['submit']); ?>){
+      $("#words").val("<?php echo $_POST['words']; ?>");
+      $("#all-opt").removeClass("optionSelect").addClass("option");
+      $("#<?php echo $_POST['hidden']; ?>").removeClass("option").addClass("optionSelect");
+   }
+   
+   $("#words").focus(function() {
+      $("#words").select();
+   });
+});
+</script>
 
 <body>
 <div id="wrapper">
@@ -82,7 +102,7 @@ else {
 		<div class="search-form">
          <form action="index.php" name="searchForm" id="searchForm" method="post">
 				<input name="hidden" type="hidden" value="all-opt" />
-				<input name="words" type="text"  class="input" />
+				<input name="words" type="text"  id="words" class="input" />
             <input name="submit" type="submit" class="button" value="" />
 			</form>
 		</div>

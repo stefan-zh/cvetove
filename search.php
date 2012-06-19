@@ -19,6 +19,7 @@ $searchQuery = "
    OR `text` LIKE '%{$string}%')" . $cat . "
    ORDER BY `id` DESC";
 $searchQuery = mysql_query($searchQuery);
+$results = array();
 while($row = mysql_fetch_assoc($searchQuery)){
    $row['link'] = "index.php?q=$row[cat]&id=$row[id]&issue=$issue&method=full";
    $row['text'] = strip_tags($row['text']);
